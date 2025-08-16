@@ -11,45 +11,13 @@
     <!-- React & ReactDOM CDNs -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- REMOVED BABEL CDN: No longer needed as JSX is pre-compiled -->
-    
-    <style>
-        /* Custom print styles to ensure correct display and hiding of elements */
-        @media print {
-            body * {
-                visibility: hidden; /* Hide everything by default for printing */
-            }
-            /* Show only the invoice display section for printing */
-            .invoice-display-section, .invoice-display-section * {
-                visibility: visible;
-            }
-            .invoice-display-section {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                max-width: none; /* Override max-width for print */
-                margin: 0;
-                padding: 20px; /* Adjust padding for print */
-                box-sizing: border-box;
-                border: 1px solid #ccc !important; /* Ensure border for print */
-                box-shadow: none !important; /* Remove shadow for print */
-                border-radius: 0 !important; /* Remove border-radius for print */
-            }
-            .hidden-for-print {
-                display: none !important; /* Elements with this class will be hidden when printing */
-            }
-            /* Ensure table takes full width in print */
-            .invoice-display-section table {
-                width: 100%;
-            }
-        }
-    </style>
+    <!-- Babel CDN for JSX transformation in the browser (for development/simple demo only) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="font-sans">
     <div id="root"></div>
 
-    <script type="text/javascript">
+    <script type="text/babel">
         // Main App component for the Invoice Template
         function App() {
             // State for general invoice details
@@ -106,7 +74,9 @@
                     setNewItem({ name: '', quantity: 1, unitPrice: 0.00 }); // Reset new item fields
                 } else {
                     // Use a custom message box or alert for user feedback
+                    // Removed alert() as per instructions
                     console.error("Please fill in all item details correctly (Name, Quantity > 0, Unit Price >= 0).");
+                    // You might want to implement a custom modal or message display here instead of console.error
                 }
             };
 
@@ -125,327 +95,250 @@
                 document.getElementById('invoiceNumber').focus();
             }, []);
 
-            return React.createElement(
-                "div",
-                { className: "min-h-screen bg-gray-100 p-4 font-sans text-gray-800 flex flex-col items-center" },
-                // Input Form Section
-                React.createElement(
-                    "div",
-                    { className: "w-full max-w-4xl bg-white rounded-lg shadow-md p-6 mb-8 hidden-for-print" },
-                    React.createElement(
-                        "h1",
-                        { className: "text-3xl font-bold text-center mb-6 text-gray-700" },
-                        "Create New Invoice"
-                    ),
-                    // Invoice Header Details Input
-                    React.createElement(
-                        "div",
-                        { className: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" },
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "invoiceNumber", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "Invoice Number:"
-                            ),
-                            React.createElement("input", {
-                                type: "text",
-                                id: "invoiceNumber",
-                                name: "invoiceNumber",
-                                value: invoiceDetails.invoiceNumber,
-                                onChange: handleInvoiceDetailsChange,
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500",
-                                placeholder: "e.g., INV-001"
-                            })
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "date", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "Date:"
-                            ),
-                            React.createElement("input", {
-                                type: "date",
-                                id: "date",
-                                name: "date",
-                                value: invoiceDetails.date,
-                                onChange: handleInvoiceDetailsChange,
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                            })
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col md:col-span-2" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "customerName", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "To (Customer Name):"
-                            ),
-                            React.createElement("input", {
-                                type: "text",
-                                id: "customerName",
-                                name: "customerName",
-                                value: invoiceDetails.customerName,
-                                onChange: handleInvoiceDetailsChange,
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500",
-                                placeholder: "e.g., John Doe"
-                            })
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col md:col-span-2" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "notes", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "Notes:"
-                            ),
-                            React.createElement("textarea", {
-                                id: "notes",
-                                name: "notes",
-                                value: invoiceDetails.notes,
-                                onChange: handleInvoiceDetailsChange,
-                                rows: "3",
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500",
-                                placeholder: "Add any specific notes for the invoice here..."
-                            })
-                        )
-                    ),
-                    // Add New Item Form
-                    React.createElement(
-                        "h2",
-                        { className: "text-xl font-semibold text-gray-700 mb-4" },
-                        "Add Item"
-                    ),
-                    React.createElement(
-                        "form",
-                        { onSubmit: handleAddItem, className: "grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6" },
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "newItemName", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "Item Name:"
-                            ),
-                            React.createElement("input", {
-                                type: "text",
-                                id: "newItemName",
-                                name: "name",
-                                value: newItem.name,
-                                onChange: handleNewItemChange,
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500",
-                                placeholder: "Product/Service",
-                                required: true
-                            })
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "newItemQuantity", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "Quantity:"
-                            ),
-                            React.createElement("input", {
-                                type: "number",
-                                id: "newItemQuantity",
-                                name: "quantity",
-                                value: newItem.quantity,
-                                onChange: handleNewItemChange,
-                                min: "1",
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500",
-                                required: true
-                            })
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "flex flex-col" },
-                            React.createElement(
-                                "label",
-                                { htmlFor: "newItemUnitPrice", className: "text-sm font-medium text-gray-600 mb-1" },
-                                "Unit Price:"
-                            ),
-                            React.createElement("input", {
-                                type: "number",
-                                id: "newItemUnitPrice",
-                                name: "unitPrice",
-                                value: newItem.unitPrice,
-                                onChange: handleNewItemChange,
-                                step: "0.01",
-                                min: "0",
-                                className: "p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500",
-                                required: true
-                            })
-                        ),
-                        React.createElement(
-                            "button",
-                            {
-                                type: "submit",
-                                className: "w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-md"
-                            },
-                            "Add Item"
-                        )
-                    ),
-                    // Printable Invoice Display Section
-                    React.createElement(
-                        "div",
-                        {
-                            ref: invoiceRef,
-                            className: "w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 invoice-display-section",
-                            style: { fontFamily: 'Inter, sans-serif' }
-                        },
-                        React.createElement(
-                            "div",
-                            { className: "flex justify-between items-center mb-8 pb-4 border-b border-gray-200" },
-                            React.createElement(
-                                "h1",
-                                { className: "text-4xl font-extrabold text-gray-900" },
-                                "INVOICE"
-                            ),
-                            React.createElement(
-                                "div",
-                                { className: "text-right" },
-                                React.createElement(
-                                    "p",
-                                    { className: "text-sm text-gray-600" },
-                                    "Invoice No: ",
-                                    React.createElement(
-                                        "span",
-                                        { className: "font-semibold text-gray-800" },
-                                        invoiceDetails.invoiceNumber
-                                    )
-                                ),
-                                React.createElement(
-                                    "p",
-                                    { className: "text-sm text-gray-600" },
-                                    "Date: ",
-                                    React.createElement(
-                                        "span",
-                                        { className: "font-semibold text-gray-800" },
-                                        invoiceDetails.date
-                                    )
-                                )
-                            )
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "mb-8" },
-                            React.createElement(
-                                "h2",
-                                { className: "text-lg font-semibold text-gray-700 mb-2" },
-                                "To:"
-                            ),
-                            React.createElement(
-                                "p",
-                                { className: "text-gray-800 text-base" },
-                                invoiceDetails.customerName || 'Customer Name'
-                            )
-                        ),
-                        // Invoice Items Table
-                        React.createElement(
-                            "div",
-                            { className: "overflow-x-auto mb-8" },
-                            React.createElement(
-                                "table",
-                                { className: "min-w-full bg-white border border-gray-300 rounded-md overflow-hidden" },
-                                React.createElement(
-                                    "thead",
-                                    null,
-                                    React.createElement(
-                                        "tr",
-                                        { className: "bg-gray-100 border-b border-gray-300" },
-                                        React.createElement(
-                                            "th",
-                                            { className: "py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider" },
-                                            "Quantity"
-                                        ),
-                                        React.createElement(
-                                            "th",
-                                            { className: "py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider" },
-                                            "Description"
-                                        ),
-                                        React.createElement(
-                                            "th",
-                                            { className: "py-3 px-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider" },
-                                            "Unit Price"
-                                        ),
-                                        React.createElement(
-                                            "th",
-                                            { className: "py-3 px-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider" },
-                                            "Amount"
-                                        ),
-                                        React.createElement(
-                                            "th",
-                                            { className: "py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider hidden-for-print" },
-                                            "Actions"
-                                        )
-                                    )
-                                ),
-                                React.createElement(
-                                    "tbody",
-                                    null,
-                                    items.length === 0 ? React.createElement(
-                                        "tr",
-                                        null,
-                                        React.createElement(
-                                            "td",
-                                            { colSpan: "5", className: "py-4 px-4 text-center text-gray-500 italic" },
-                                            "No items added yet."
-                                        )
-                                    ) : items.map((item, index) => React.createElement(
-                                        "tr",
-                                        { key: index, className: "border-b border-gray-200 last:border-b-0" },
-                                        React.createElement(
-                                            "td",
-                                            { className: "py-3 px-4 text-sm text-gray-800" },
-                                            item.quantity
-                                        ),
-                                        React.createElement(
-                                            "td",
-                                            { className: "py-3 px-4 text-sm text-gray-800" },
-                                            item.name
-                                        ),
-                                        React.createElement(
-                                            "td",
-                                            { className: "py-3 px-4 text-right text-sm text-gray-800" },
-                                            "$",
-                                            item.unitPrice.toFixed(2)
-                                        ),
-                                        React.createElement(
-                                            "td",
-                                            { className: "py-3 px-4 text-right text-sm text-gray-800" },
-                                            "$",
-                                            (item.quantity * item.unitPrice).toFixed(2)
-                                        ),
-                                        React.createElement(
-                                            "td",
-                                            { className: "py-3 px-4 text-center hidden-for-print" },
-                                            React.createElement(
-                                                "button",
-                                                {
-                                                    onClick: () => handleRemoveItem(index),
-                                                    className: "text-red-600 hover:text-red-800 transition-colors duration-200 text-sm font-medium"
-                                                },
-                                                "Remove"
-                                            )
-                                        )
-                                    ))
-                                )
-                            )
-                        ),
-                        // Notes and Total Section
-                        React.createElement(
-                            "div",
-                            { className: "flex justify-between items-start" },
-                            React.createElement(
-                                "div",
-                                { className: "w-1/2 pr-4" },
-                                React.createElement(
-                                    "h2",
-                                    { className: "text-lg font-semibold text-gray-700 mb-2" },
-                                    "Notes:"
-                                ),
-                                Re
+            return (
+                <div className="min-h-screen bg-gray-100 p-4 font-sans text-gray-800 flex flex-col items-center">
+                    {/* Input Form Section */}
+                    <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6 mb-8 print:hidden">
+                        <h1 className="text-3xl font-bold text-center mb-6 text-gray-700">Create New Invoice</h1>
+
+                        {/* Invoice Header Details Input */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div className="flex flex-col">
+                                <label htmlFor="invoiceNumber" className="text-sm font-medium text-gray-600 mb-1">Invoice Number:</label>
+                                <input
+                                    type="text"
+                                    id="invoiceNumber"
+                                    name="invoiceNumber"
+                                    value={invoiceDetails.invoiceNumber}
+                                    onChange={handleInvoiceDetailsChange}
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="e.g., INV-001"
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="date" className="text-sm font-medium text-gray-600 mb-1">Date:</label>
+                                <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    value={invoiceDetails.date}
+                                    onChange={handleInvoiceDetailsChange}
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+                            <div className="flex flex-col md:col-span-2">
+                                <label htmlFor="customerName" className="text-sm font-medium text-gray-600 mb-1">To (Customer Name):</label>
+                                <input
+                                    type="text"
+                                    id="customerName"
+                                    name="customerName"
+                                    value={invoiceDetails.customerName}
+                                    onChange={handleInvoiceDetailsChange}
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="e.g., John Doe"
+                                />
+                            </div>
+                            <div className="flex flex-col md:col-span-2">
+                                <label htmlFor="notes" className="text-sm font-medium text-gray-600 mb-1">Notes:</label>
+                                <textarea
+                                    id="notes"
+                                    name="notes"
+                                    value={invoiceDetails.notes}
+                                    onChange={handleInvoiceDetailsChange}
+                                    rows="3"
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Add any specific notes for the invoice here..."
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        {/* Add New Item Form */}
+                        <h2 className="text-xl font-semibold text-gray-700 mb-4">Add Item</h2>
+                        <form onSubmit={handleAddItem} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6">
+                            <div className="flex flex-col">
+                                <label htmlFor="newItemName" className="text-sm font-medium text-gray-600 mb-1">Item Name:</label>
+                                <input
+                                    type="text"
+                                    id="newItemName"
+                                    name="name"
+                                    value={newItem.name}
+                                    onChange={handleNewItemChange}
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Product/Service"
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="newItemQuantity" className="text-sm font-medium text-gray-600 mb-1">Quantity:</label>
+                                <input
+                                    type="number"
+                                    id="newItemQuantity"
+                                    name="quantity"
+                                    value={newItem.quantity}
+                                    onChange={handleNewItemChange}
+                                    min="1"
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="newItemUnitPrice" className="text-sm font-medium text-gray-600 mb-1">Unit Price:</label>
+                                <input
+                                    type="number"
+                                    id="newItemUnitPrice"
+                                    name="unitPrice"
+                                    value={newItem.unitPrice}
+                                    onChange={handleNewItemChange}
+                                    step="0.01"
+                                    min="0"
+                                    className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-md"
+                            >
+                                Add Item
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Printable Invoice Display Section */}
+                    <div
+                        ref={invoiceRef}
+                        className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 print:shadow-none print:p-0 print:border print:border-gray-300"
+                        style={{ fontFamily: 'Inter, sans-serif' }}
+                    >
+                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
+                            <h1 className="text-4xl font-extrabold text-gray-900">INVOICE</h1>
+                            <div className="text-right">
+                                <p className="text-sm text-gray-600">Invoice No: <span className="font-semibold text-gray-800">{invoiceDetails.invoiceNumber}</span></p>
+                                <p className="text-sm text-gray-600">Date: <span className="font-semibold text-gray-800">{invoiceDetails.date}</span></p>
+                            </div>
+                        </div>
+
+                        <div className="mb-8">
+                            <h2 className="text-lg font-semibold text-gray-700 mb-2">To:</h2>
+                            <p className="text-gray-800 text-base">{invoiceDetails.customerName || 'Customer Name'}</p>
+                        </div>
+
+                        {/* Invoice Items Table */}
+                        <div className="overflow-x-auto mb-8">
+                            <table className="min-w-full bg-white border border-gray-300 rounded-md overflow-hidden">
+                                <thead>
+                                    <tr className="bg-gray-100 border-b border-gray-300">
+                                        <th className="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                                        <th className="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                                        <th className="py-3 px-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Unit Price</th>
+                                        <th className="py-3 px-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
+                                        <th className="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider print:hidden">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {items.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="py-4 px-4 text-center text-gray-500 italic">No items added yet.</td>
+                                        </tr>
+                                    ) : (
+                                        items.map((item, index) => (
+                                            <tr key={index} className="border-b border-gray-200 last:border-b-0">
+                                                <td className="py-3 px-4 text-sm text-gray-800">{item.quantity}</td>
+                                                <td className="py-3 px-4 text-sm text-gray-800">{item.name}</td>
+                                                <td className="py-3 px-4 text-right text-sm text-gray-800">${item.unitPrice.toFixed(2)}</td>
+                                                <td className="py-3 px-4 text-right text-sm text-gray-800">${(item.quantity * item.unitPrice).toFixed(2)}</td>
+                                                <td className="py-3 px-4 text-center print:hidden">
+                                                    <button
+                                                        onClick={() => handleRemoveItem(index)}
+                                                        className="text-red-600 hover:text-red-800 transition-colors duration-200 text-sm font-medium"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Notes and Total Section */}
+                        <div className="flex justify-between items-start">
+                            <div className="w-1/2 pr-4">
+                                <h2 className="text-lg font-semibold text-gray-700 mb-2">Notes:</h2>
+                                <p className="text-gray-800 text-sm italic">{invoiceDetails.notes || 'No specific notes for this invoice.'}</p>
+                            </div>
+                            <div className="w-1/2 pl-4 text-right">
+                                <p className="text-lg font-bold text-gray-800">TOTAL: <span className="text-blue-700">${subtotal.toFixed(2)}</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Print Button */}
+                    <div className="w-full max-w-4xl mt-8 flex justify-center print:hidden">
+                        <button
+                            onClick={handlePrint}
+                            className="bg-green-600 text-white py-3 px-8 rounded-md hover:bg-green-700 transition-colors duration-200 shadow-lg text-lg font-semibold"
+                        >
+                            Print Invoice
+                        </button>
+                    </div>
+
+                    {/* Print Styles for the invoice */}
+                    <style dangerouslySetInnerHTML={{__html: `
+                        @media print {
+                            body * {
+                                visibility: hidden;
+                            }
+                            #root > div:first-child { /* Targets the input form section */
+                                display: none;
+                            }
+                            #root > div:last-child { /* Targets the print button div */
+                                display: none;
+                            }
+                            .print\\:hidden { /* Use escaped colon for Tailwind classes in CSS */
+                                display: none !important;
+                            }
+                            .print\\:shadow-none {
+                                box-shadow: none !important;
+                            }
+                            .print\\:p-0 {
+                                padding: 0 !important;
+                            }
+                            .print\\:border {
+                                border: 1px solid #ccc !important;
+                            }
+                            /* Show only the invoice display section for printing */
+                            .invoice-display-section, .invoice-display-section * {
+                                visibility: visible;
+                            }
+                            /* Ensure specific elements always show */
+                            .w-full.max-w-4xl.bg-white.rounded-lg.shadow-lg.p-8,
+                            .w-full.max-w-4xl.bg-white.rounded-lg.shadow-lg.p-8 * {
+                                visibility: visible;
+                            }
+                            /* Apply styles to the main printable div */
+                            .w-full.max-w-4xl.bg-white.rounded-lg.shadow-lg.p-8 {
+                                position: absolute;
+                                left: 0;
+                                top: 0;
+                                width: 100%;
+                                max-width: none;
+                                margin: 0;
+                                padding: 20px;
+                                box-sizing: border-box;
+                            }
+                            table {
+                              width: 100%;
+                            }
+                        }
+                    `}} />
+                </div>
+            );
+        }
+
+        // Render the App component into the 'root' div
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

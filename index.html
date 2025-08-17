@@ -44,104 +44,127 @@
       const removeItem = (i) => setItems(prev=>prev.filter((_,idx)=>idx!==i));
       const printIt = () => window.print();
       React.useEffect(()=>{document.getElementById('invoiceNumber')?.focus();},[]);
+
       return (
-        <div className="min-h-screen p-4 text-gray-800 flex flex-col items-center">
-          <div className="editor w-full max-w-4xl bg-white rounded-lg shadow-md p-6 mb-8">
-            <h1 className="text-3xl font-bold text-center mb-6 text-gray-700">Create New Invoice</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="flex flex-col">
-                <label htmlFor="invoiceNumber" className="text-sm font-medium text-gray-600 mb-1">Invoice Number:</label>
-                <input type="text" id="invoiceNumber" name="invoiceNumber" value={invoiceDetails.invoiceNumber}
-                  onChange={onHdr} className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., INV-001" />
+        <div className="min-h-screen text-gray-800 flex flex-col items-center">
+          {/* Wider container with smaller side padding so content sits closer to edges */}
+          <div className="w-full max-w-[1800px] mx-auto px-3 md:px-6 lg:px-8 py-4">
+            {/* Two-column layout with bigger gap so they aren't too close to each other */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 xl:gap-12 items-start">
+              {/* Editor (left) */}
+              <div className="editor bg-white rounded-2xl shadow-md p-8 lg:p-10">
+                <h1 className="text-3xl lg:text-4xl font-bold text-center mb-8 text-gray-700">Create New Invoice</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                  <div className="flex flex-col">
+                    <label htmlFor="invoiceNumber" className="text-sm font-medium text-gray-600 mb-1">Invoice Number:</label>
+                    <input type="text" id="invoiceNumber" name="invoiceNumber" value={invoiceDetails.invoiceNumber}
+                      onChange={onHdr} className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" placeholder="e.g., INV-001" />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="date" className="text-sm font-medium text-gray-600 mb-1">Date:</label>
+                    <input type="date" id="date" name="date" value={invoiceDetails.date}
+                      onChange={onHdr} className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" />
+                  </div>
+                  <div className="flex flex-col md:col-span-2">
+                    <label htmlFor="customerName" className="text-sm font-medium text-gray-600 mb-1">To (Customer Name):</label>
+                    <input type="text" id="customerName" name="customerName" value={invoiceDetails.customerName}
+                      onChange={onHdr} className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" placeholder="e.g., John Doe" />
+                  </div>
+                  <div className="flex flex-col md:col-span-2">
+                    <label htmlFor="notes" className="text-sm font-medium text-gray-600 mb-1">Notes:</label>
+                    <textarea id="notes" name="notes" rows="3" value={invoiceDetails.notes}
+                      onChange={onHdr} className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" placeholder="Add notes..."></textarea>
+                  </div>
+                </div>
+                <h2 className="text-2xl font-semibold text-gray-700 mb-4">Add Item</h2>
+                <form onSubmit={addItem} className="grid grid-cols-1 md:grid-cols-4 gap-5 items-end">
+                  <div className="flex flex-col md:col-span-2">
+                    <label htmlFor="newItemName" className="text-sm font-medium text-gray-600 mb-1">Item Name:</label>
+                    <input type="text" id="newItemName" name="name" value={newItem.name} onChange={onNew}
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" placeholder="Product/Service" required />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="newItemQuantity" className="text-sm font-medium text-gray-600 mb-1">Quantity:</label>
+                    <input type="number" id="newItemQuantity" name="quantity" min="1" value={newItem.quantity} onChange={onNew}
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" required />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="newItemUnitPrice" className="text-sm font-medium text-gray-600 mb-1">Unit Price:</label>
+                    <input type="number" id="newItemUnitPrice" name="unitPrice" step="0.01" min="0" value={newItem.unitPrice} onChange={onNew}
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-base" required />
+                  </div>
+                  <button type="submit" className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md text-lg">
+                    Add Item
+                  </button>
+                </form>
               </div>
-              <div className="flex flex-col">
-                <label htmlFor="date" className="text-sm font-medium text-gray-600 mb-1">Date:</label>
-                <input type="date" id="date" name="date" value={invoiceDetails.date}
-                  onChange={onHdr} className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-              <div className="flex flex-col md:col-span-2">
-                <label htmlFor="customerName" className="text-sm font-medium text-gray-600 mb-1">To (Customer Name):</label>
-                <input type="text" id="customerName" name="customerName" value={invoiceDetails.customerName}
-                  onChange={onHdr} className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., John Doe" />
-              </div>
-              <div className="flex flex-col md:col-span-2">
-                <label htmlFor="notes" className="text-sm font-medium text-gray-600 mb-1">Notes:</label>
-                <textarea id="notes" name="notes" rows="3" value={invoiceDetails.notes}
-                  onChange={onHdr} className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Add notes..."></textarea>
+
+              {/* Invoice (right, sticky) */}
+              <div className="md:sticky md:top-4 self-start">
+                <div id="invoice" className="w-full bg-white rounded-2xl shadow-lg p-10">
+                  <div className="flex justify-between items-center mb-8 pb-5 border-b border-gray-200">
+                    <h1 className="text-4xl xl:text-5xl font-extrabold text-gray-900">INVOICE</h1>
+                    <div className="text-right text-base xl:text-lg">
+                      <p className="text-gray-600">Invoice No: <span className="font-semibold text-gray-800">{invoiceDetails.invoiceNumber}</span></p>
+                      <p className="text-gray-600">Date: <span className="font-semibold text-gray-800">{invoiceDetails.date}</span></p>
+                    </div>
+                  </div>
+
+                  <div className="mb-8">
+                    <h2 className="text-xl font-semibold text-gray-700 mb-2">To:</h2>
+                    <p className="text-gray-800 text-lg">{invoiceDetails.customerName || 'Customer Name'}</p>
+                  </div>
+
+                  <div className="overflow-x-auto mb-8">
+                    <table className="min-w-full bg-white border border-gray-300 rounded-md overflow-hidden">
+                      <thead>
+                        <tr className="bg-gray-100 border-b border-gray-300">
+                          <th className="py-3 px-3 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider w-12">No</th>
+                          <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                          <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                          <th className="py-3 px-4 text-right text-sm font-semibold text-gray-600 uppercase tracking-wider">Unit Price</th>
+                          <th className="py-3 px-4 text-right text-sm font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
+                          <th className="py-3 px-4 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider print:hidden">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {items.length === 0
+                          ? (<tr><td colSpan="6" className="py-5 px-4 text-center text-gray-500 italic text-base">No items added yet.</td></tr>)
+                          : items.map((item, i) => (
+                            <tr key={i} className="border-b border-gray-200 last:border-b-0">
+                              <td className="py-3 px-3 text-center text-base text-gray-800">{i+1}</td>
+                              <td className="py-3 px-4 text-base text-gray-800">{item.quantity}</td>
+                              <td className="py-3 px-4 text-base text-gray-800">{item.name}</td>
+                              <td className="py-3 px-4 text-right text-base text-gray-800">${item.unitPrice.toFixed(2)}</td>
+                              <td className="py-3 px-4 text-right text-base text-gray-800">${(item.quantity * item.unitPrice).toFixed(2)}</td>
+                              <td className="py-3 px-4 text-center print:hidden">
+                                <button onClick={() => removeItem(i)} className="text-red-600 hover:text-red-800 transition-colors duration-200 text-sm font-medium">Remove</button>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="flex justify-between items-start">
+                    <div className="w-1/2 pr-6">
+                      <h2 className="text-xl font-semibold text-gray-700 mb-2">Notes:</h2>
+                      <p className="text-gray-800 text-base italic">{invoiceDetails.notes || 'No specific notes for this invoice.'}</p>
+                    </div>
+                    <div className="w-1/2 pl-6 text-right">
+                      <p className="text-2xl font-bold text-gray-800">TOTAL: <span className="text-blue-700">${subtotal.toFixed(2)}</span></p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Add Item</h2>
-            <form onSubmit={addItem} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6">
-              <div className="flex flex-col">
-                <label htmlFor="newItemName" className="text-sm font-medium text-gray-600 mb-1">Item Name:</label>
-                <input type="text" id="newItemName" name="name" value={newItem.name} onChange={onNew}
-                  className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Product/Service" required />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="newItemQuantity" className="text-sm font-medium text-gray-600 mb-1">Quantity:</label>
-                <input type="number" id="newItemQuantity" name="quantity" min="1" value={newItem.quantity} onChange={onNew}
-                  className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="newItemUnitPrice" className="text-sm font-medium text-gray-600 mb-1">Unit Price:</label>
-                <input type="number" id="newItemUnitPrice" name="unitPrice" step="0.01" min="0" value={newItem.unitPrice} onChange={onNew}
-                  className="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required />
-              </div>
-              <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-md">Add Item</button>
-            </form>
-          </div>
-          <div id="invoice" className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8">
-            <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
-              <h1 className="text-4xl font-extrabold text-gray-900">INVOICE</h1>
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Invoice No: <span className="font-semibold text-gray-800">{invoiceDetails.invoiceNumber}</span></p>
-                <p className="text-sm text-gray-600">Date: <span className="font-semibold text-gray-800">{invoiceDetails.date}</span></p>
-              </div>
+
+            {/* Bottom actions */}
+            <div className="actions w-full mt-8 flex justify-center">
+              <button onClick={printIt} className="bg-green-600 text-white py-3 px-10 rounded-xl hover:bg-green-700 transition-colors duration-200 shadow-lg text-xl font-semibold">
+                Print Invoice
+              </button>
             </div>
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-700 mb-2">To:</h2>
-              <p className="text-gray-800 text-base">{invoiceDetails.customerName || 'Customer Name'}</p>
-            </div>
-            <div className="overflow-x-auto mb-8">
-              <table className="min-w-full bg-white border border-gray-300 rounded-md overflow-hidden">
-                <thead>
-                  <tr className="bg-gray-100 border-b border-gray-300">
-                    <th className="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
-                    <th className="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
-                    <th className="py-3 px-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Unit Price</th>
-                    <th className="py-3 px-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
-                    <th className="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider print:hidden">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.length === 0
-                    ? (<tr><td colSpan="5" className="py-4 px-4 text-center text-gray-500 italic">No items added yet.</td></tr>)
-                    : items.map((item, i) => (
-                      <tr key={i} className="border-b border-gray-200 last:border-b-0">
-                        <td className="py-3 px-4 text-sm text-gray-800">{item.quantity}</td>
-                        <td className="py-3 px-4 text-sm text-gray-800">{item.name}</td>
-                        <td className="py-3 px-4 text-right text-sm text-gray-800">${item.unitPrice.toFixed(2)}</td>
-                        <td className="py-3 px-4 text-right text-sm text-gray-800">${(item.quantity * item.unitPrice).toFixed(2)}</td>
-                        <td className="py-3 px-4 text-center print:hidden">
-                          <button onClick={() => removeItem(i)} className="text-red-600 hover:text-red-800 transition-colors duration-200 text-sm font-medium">Remove</button>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="flex justify-between items-start">
-              <div className="w-1/2 pr-4">
-                <h2 className="text-lg font-semibold text-gray-700 mb-2">Notes:</h2>
-                <p className="text-gray-800 text-sm italic">{invoiceDetails.notes || 'No specific notes for this invoice.'}</p>
-              </div>
-              <div className="w-1/2 pl-4 text-right">
-                <p className="text-lg font-bold text-gray-800">TOTAL: <span className="text-blue-700">${subtotal.toFixed(2)}</span></p>
-              </div>
-            </div>
-          </div>
-          <div className="actions w-full max-w-4xl mt-8 flex justify-center">
-            <button onClick={printIt} className="bg-green-600 text-white py-3 px-8 rounded-md hover:bg-green-700 transition-colors duration-200 shadow-lg text-lg font-semibold">Print Invoice</button>
           </div>
         </div>
       );

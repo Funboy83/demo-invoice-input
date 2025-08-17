@@ -4,23 +4,54 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Printable Invoice Template</title>
+  <!-- Tailwind (standard utilities) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    body { font-family: Inter, system-ui, sans-serif; }
+    :root{
+      --page-max: 1720px;   /* overall max width on desktop */
+      --page-pad: 16px;     /* padding to page edges */
+      --col-gap: 56px;      /* space between editor and invoice */
+      --sticky-top: 16px;
+    }
+    body { font-family: Inter, system-ui, sans-serif; background:#f3f4f6; }
+    .page {
+      width: min(100vw - var(--page-pad)*2, var(--page-max));
+      margin: 0 auto;
+      padding: 16px var(--page-pad);
+    }
+    .twocol {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--col-gap);
+    }
+    @media (min-width: 768px){
+      .twocol { grid-template-columns: 1fr 1fr; }
+    }
+    .sticky-col { position: static; }
+    @media (min-width: 768px){
+      .sticky-col { position: sticky; top: var(--sticky-top); align-self: start; }
+    }
+
+    /* Print */
     @media print {
       .editor, .actions { display: none !important; }
       #invoice { box-shadow: none !important; border: 1px solid #ccc !important; padding: 20px !important; }
       body { background: #fff !important; }
       @page { margin: 12mm; }
     }
+
+    /* Tiny, removable build tag so you can confirm the new file is live */
+    .build-badge { position: fixed; bottom: 8px; left: 8px; font-size: 10px; color: #94a3b8; }
   </style>
 </head>
-<body class="bg-gray-100">
+<body data-build="wide-css-v1">
+  <div class="build-badge">build: wide-css-v1</div>
   <div id="root"></div>
+
   <script type="text/babel" data-presets="env,react">
     function App(){
       const [invoiceDetails, setInvoiceDetails] = React.useState({
@@ -47,12 +78,10 @@
 
       return (
         <div className="min-h-screen text-gray-800 flex flex-col items-center">
-          {/* Wider container with smaller side padding so content sits closer to edges */}
-          <div className="w-full max-w-[1800px] mx-auto px-3 md:px-6 lg:px-8 py-4">
-            {/* Two-column layout with bigger gap so they aren't too close to each other */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 xl:gap-12 items-start">
+          <div className="page">
+            <div className="twocol">
               {/* Editor (left) */}
-              <div className="editor bg-white rounded-2xl shadow-md p-8 lg:p-10">
+              <div className="editor bg-white rounded-2xl shadow-md p-8">
                 <h1 className="text-3xl lg:text-4xl font-bold text-center mb-8 text-gray-700">Create New Invoice</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                   <div className="flex flex-col">
@@ -100,7 +129,7 @@
               </div>
 
               {/* Invoice (right, sticky) */}
-              <div className="md:sticky md:top-4 self-start">
+              <div className="sticky-col">
                 <div id="invoice" className="w-full bg-white rounded-2xl shadow-lg p-10">
                   <div className="flex justify-between items-center mb-8 pb-5 border-b border-gray-200">
                     <h1 className="text-4xl xl:text-5xl font-extrabold text-gray-900">INVOICE</h1>
